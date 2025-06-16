@@ -1,11 +1,13 @@
 # MoneyMaker AI
 
-A small demo of an automated trading assistant including:
+An automated trading assistant including:
 
 - FastAPI dashboard with WebSocket stream
 - Telegram bot interaction
-- Simple ML based trading strategy
+- Simple ML based trading strategy with pattern detection
 - systemd service example
+- Backtesting module
+- Dockerfile for container deployment
 
 ## Quick Start
 
@@ -34,3 +36,12 @@ sudo systemctl start moneymaker.service
 ```
 
 Logs will appear in `/var/log/moneymaker.log` and rotated daily as configured in `config/logrotate.conf`.
+
+## Docker
+
+Build and run using Docker:
+
+```bash
+docker build -t moneymaker .
+docker run -p 5000:5000 --env-file .env moneymaker
+```

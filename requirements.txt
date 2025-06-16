@@ -6,3 +6,4 @@ pandas
 scikit-learn
 plotly
 jinja2
+matplotlib

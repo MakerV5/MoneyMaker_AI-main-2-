@@ -3,6 +3,12 @@ from pathlib import Path
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from pattern_detector import (
+    detect_cup_and_handle,
+    detect_flag,
+    detect_pennant,
+    detect_harmonic,
+)
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
@@ -31,13 +37,17 @@ class TradingStrategy:
         df['signal'] = df['macd'].ewm(span=9, adjust=False).mean()
         df['bollinger_high'] = df['Close'].rolling(window=20).mean() + 2*df['Close'].rolling(window=20).std()
         df['bollinger_low'] = df['Close'].rolling(window=20).mean() - 2*df['Close'].rolling(window=20).std()
+        df['cup_handle'] = df.apply(lambda row: detect_cup_and_handle(df.loc[:row.name]), axis=1)
+        df['flag'] = df.apply(lambda row: detect_flag(df.loc[:row.name]), axis=1)
+        df['pennant'] = df.apply(lambda row: detect_pennant(df.loc[:row.name]), axis=1)
+        df['harmonic'] = df.apply(lambda row: 1 if detect_harmonic(df.loc[:row.name]) else 0, axis=1)
         df = df.dropna()
         return df
 
     def train(self):
         df = self.features(self.load_data())
         df['target'] = (df['Close'].shift(-1) > df['Close']).astype(int)
-        X = df[['ema','rsi','macd','signal','bollinger_high','bollinger_low']]
+        X = df[['ema','rsi','macd','signal','bollinger_high','bollinger_low','cup_handle','flag','pennant','harmonic']]
         y = df['target']
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         models = {
@@ -61,5 +71,5 @@ class TradingStrategy:
         if self.model is None:
             raise RuntimeError('Model not trained')
         feat_df = self.features(df.tail(30))
-        X = feat_df[['ema','rsi','macd','signal','bollinger_high','bollinger_low']].tail(1)
+        X = feat_df[['ema','rsi','macd','signal','bollinger_high','bollinger_low','cup_handle','flag','pennant','harmonic']].tail(1)
         return int(self.model.predict(X)[0])
