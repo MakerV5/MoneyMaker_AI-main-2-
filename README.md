@@ -1,27 +1,36 @@
 # MoneyMaker AI
 
-This repository contains a minimal skeleton for a trading assistant with a Telegram bot and a web dashboard.
+A small demo of an automated trading assistant including:
+
+- FastAPI dashboard with WebSocket stream
+- Telegram bot interaction
+- Simple ML based trading strategy
+- systemd service example
 
 ## Quick Start
 
-1. Install dependencies:
-   ```bash
-   pip install flask python-telegram-bot==20.3
-   ```
-2. Set your Telegram bot token in `start_all.py`.
-3. Run the application:
-   ```bash
-   python start_all.py
-   ```
-4. Access the dashboard at `http://localhost:5000`.
+1. Install Python dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Create a `.env` file (see provided sample) with your Telegram token and dashboard users.
+3. Run the application
+
+```bash
+python start_all.py
+```
+
+Open the dashboard on `http://localhost:5000` and login with your credentials.
 
 ## Service Setup
 
-A sample systemd service file is provided in `moneymaker.service`. Update the `ExecStart` path and copy the file to `/etc/systemd/system/`. Then run:
+Copy `moneymaker.service` to `/etc/systemd/system/` and adjust the `WorkingDirectory` if necessary. Enable and start the service:
 
 ```bash
 sudo systemctl enable moneymaker.service
 sudo systemctl start moneymaker.service
 ```
 
-Logs will be written to `/var/log/moneymaker.log`.
+Logs will appear in `/var/log/moneymaker.log` and rotated daily as configured in `config/logrotate.conf`.
