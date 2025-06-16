@@ -3,7 +3,9 @@ Description=MoneyMaker Service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /path/to/start_all.py
+WorkingDirectory=/opt/moneymaker
+ExecStart=/usr/bin/python3 /opt/moneymaker/start_all.py
+EnvironmentFile=/opt/moneymaker/.env
 Restart=always
 StandardOutput=append:/var/log/moneymaker.log
 StandardError=append:/var/log/moneymaker.log
