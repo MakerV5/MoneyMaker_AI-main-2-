@@ -1,0 +1,12 @@
+[Unit]
+Description=MoneyMaker Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /path/to/start_all.py
+Restart=always
+StandardOutput=append:/var/log/moneymaker.log
+StandardError=append:/var/log/moneymaker.log
+
+[Install]
+WantedBy=multi-user.target
