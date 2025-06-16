@@ -1,4 +1,5 @@
 import logging
+from logging.handlers import RotatingFileHandler
 import os
 from threading import Thread
 from pathlib import Path
@@ -8,7 +9,19 @@ import uvicorn
 from bot.telegram_bot import TelegramBot
 import dashboard.app as dashboard_module
 
-logging.basicConfig(level=logging.INFO)
+LOG_DIR = Path('logs')
+LOG_DIR.mkdir(exist_ok=True)
+
+activity_handler = RotatingFileHandler(LOG_DIR / 'activity.log', maxBytes=1_000_000, backupCount=3)
+activity_handler.setLevel(logging.INFO)
+error_handler = RotatingFileHandler(LOG_DIR / 'errors.log', maxBytes=1_000_000, backupCount=3)
+error_handler.setLevel(logging.ERROR)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+    handlers=[logging.StreamHandler(), activity_handler, error_handler]
+)
 load_dotenv()
 
 TOKEN = os.getenv('TELEGRAM_TOKEN')

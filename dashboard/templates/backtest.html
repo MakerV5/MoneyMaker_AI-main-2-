@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backtest</title>
+</head>
+<body>
+<h1>Backtest</h1>
+<form action="/backtest" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <button type="submit">Run</button>
+</form>
+{% if profit is defined %}
+<p>Profit: {{ profit }}</p>
+<p>Drawdown: {{ drawdown }}</p>
+<img src="/static/backtests/{{ plot }}" alt="equity curve" />
+{% endif %}
+</body>
+</html>

@@ -7,12 +7,36 @@
 <body>
 <h1>MoneyMaker Dashboard</h1>
 <div id="signal">Waiting...</div>
+<select id="symbol">
+    <option>BTCUSDT</option>
+</select>
+<div id="chart" style="width:800px;height:400px"></div>
+<a href="/backtest">Backtesting</a>
 <script>
 const ws = new WebSocket(`ws://${location.host}/ws`);
 ws.onmessage = (ev) => {
     const data = JSON.parse(ev.data);
     document.getElementById('signal').innerText = data.signal ? 'BUY' : 'SELL';
 };
+
+async function loadChart() {
+    const symbol = document.getElementById('symbol').value;
+    const resp = await fetch(`/api/data?symbol=${symbol}`);
+    const rows = await resp.json();
+    const x = rows.map((r, i) => i);
+    const trace = {
+        x: x,
+        open: rows.map(r => r.Open),
+        high: rows.map(r => r.High),
+        low: rows.map(r => r.Low),
+        close: rows.map(r => r.Close),
+        type: 'candlestick'
+    };
+    Plotly.newPlot('chart', [trace]);
+}
+
+loadChart();
+document.getElementById('symbol').addEventListener('change', loadChart);
 </script>
 </body>
 </html>
